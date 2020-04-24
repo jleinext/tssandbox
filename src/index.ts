@@ -1,94 +1,112 @@
-/**
- * Test de quelques objets valeurs très simple.
- */
+import { Entity } from "./entity";
+import { ValueObject } from "./valueobject";
 
-abstract class ValueObject<TBrand extends string> {
-    private __brand!: TBrand; // Brand type to enable sort of nominal typing.
+class PersonID extends ValueObject<"PersonID", PersonID> {
+  constructor(readonly value: string) {
+    super();
+  }
 
-    // public abstract Equals(other: any): boolean;
+  public equals(other: PersonID): boolean {
+    return other.value === this.value;
+  }
 }
 
-class DisplayName extends ValueObject<'DisplayName'> {
-    constructor(readonly value: string) {
-        super();
-        if (!value) {
-            throw Error("value is mandatory");
-        }
-    }
-
-    public Equals(other: any): boolean {
-        if (!(other instanceof DisplayName)) {
-            return false;
-        }
-
-        return other.value === this.value;
-    }
+class Person extends Entity<PersonID> {
+  constructor(private name: string) {
+    super(new PersonID("42"));
+  }
 }
 
-class AccessToken extends ValueObject<'Access'> {
-    constructor(readonly value: string) {
-        super();
-    }
+interface PersonRepository {
+  GetByID(id: PersonID): Person;
 }
 
-class RefreshToken extends ValueObject<'Refresh'> {
-    constructor(readonly value: string) {
-        super();
-    }
-}
+var repo!: PersonRepository;
 
-type Toto = string;
+var p = repo.GetByID(new PersonID("43"));
+var p2 = new Person("john doe");
 
-const john = new AccessToken('john doe');
-const doe = new DisplayName("john doe");
+// class DisplayName extends ValueObject<"DisplayName"> {
+//   constructor(readonly value: string) {
+//     super();
+//     if (!value) {
+//       throw Error("value is mandatory");
+//     }
+//   }
 
-// undefined ?? throw new Error('errar');
+//   public Equals(other: any): boolean {
+//     if (!(other instanceof DisplayName)) {
+//       return false;
+//     }
 
-Test(new RefreshToken('refresh_token'));
+//     return other.value === this.value;
+//   }
+// }
 
-// console.log(WhatsMyName(john), john.Equals(doe));
+// class AccessToken extends ValueObject<"Access"> {
+//   constructor(readonly value: string) {
+//     super();
+//   }
+// }
 
-function Test(token: AccessToken) {
+// class RefreshToken extends ValueObject<"Refresh"> {
+//   constructor(readonly value: string) {
+//     super();
+//   }
+// }
 
-}
+// type Toto = string;
 
-function WhatsMyName(name: DisplayName): string {
-    return name.value;
-}
+// const john = new AccessToken("john doe");
+// const doe = new DisplayName("john doe");
 
-abstract class Aggregate<TProps> {
-    protected constructor(protected props: TProps) {
+// // undefined ?? throw new Error('errar');
 
-    }
+// Test(new RefreshToken("refresh_token"));
 
-    public createMemento(): Readonly<TProps> {
-        return this.props;
-    }
+// // console.log(WhatsMyName(john), john.Equals(doe));
 
-    public static fromMemento<T extends Aggregate<TProps>, TProps>(memento: Readonly<TProps>): T {
-        return new Aggregate<TProps>(memento) as T;
-    }
-}
+// function Test(token: AccessToken) {}
 
-interface TestProps {
-    name: string;
-}
+// function WhatsMyName(name: DisplayName): string {
+//   return name.value;
+// }
 
-class TestEntity extends Aggregate<TestProps> {
-    get name() { return this.props.name; }
+// abstract class Aggregate<TProps> {
+//   protected constructor(protected props: TProps) {}
 
-    constructor(name: string) {
-        super({
-            name,
-        });
-    }
+//   public createMemento(): Readonly<TProps> {
+//     return this.props;
+//   }
 
-    public static fromMemento(memento: Readonly<TestProps>): TestEntity {
-        return null;
-    }
-}
+//   public static fromMemento<T extends Aggregate<TProps>, TProps>(
+//     memento: Readonly<TProps>
+//   ): T {
+//     return new Aggregate<TProps>(memento) as T;
+//   }
+// }
 
-const t = new TestEntity('john doe');
+// interface TestProps {
+//   name: string;
+// }
 
-const state = t.createMemento();
-TestEntity.fromMemento(state);
+// class TestEntity extends Aggregate<TestProps> {
+//   get name() {
+//     return this.props.name;
+//   }
+
+//   constructor(name: string) {
+//     super({
+//       name,
+//     });
+//   }
+
+//   public static fromMemento(memento: Readonly<TestProps>): TestEntity {
+//     return null;
+//   }
+// }
+
+// const t = new TestEntity("john doe");
+
+// const state = t.createMemento();
+// TestEntity.fromMemento(state);
