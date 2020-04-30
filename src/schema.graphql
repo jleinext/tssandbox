@@ -1,0 +1,21 @@
+type Query {
+  hello: String!
+  users: [User!]!
+  userByName(firstName: String!): User!
+}
+
+type Mutation {
+  changeMessage(msg: String!): String!
+  updateUser(firstName: String!): User!
+  doSomething(cmd: DoSomethingCommand): Boolean!
+}
+
+type User {
+  FirstName: String!
+  LastName: String!
+}
+
+input DoSomethingCommand {
+  one: String
+  two: String!
+}

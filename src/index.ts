@@ -1,112 +1,129 @@
-import { Entity } from "./entity";
-import { ValueObject } from "./valueobject";
+/**
+ * Bienvenue dans ce petit bac à sable !
+ *
+ * On commence par un peu de graphql avec un petit serveur pour expliquer rapidement
+ * le fonctionnement.
+ *
+ * En graphql, l'élément le plus important est le schéma. Il définit les types
+ * disponibles ainsi que les opérations. Ce schéma peut servir de base pour générer
+ * du code, on le verra ici.
+ *
+ * La syntaxe pour définir le schéma est relativement simple et peut être trouvée
+ * ici: https://graphql.org/learn/schema/
+ *
+ * Pour cet exemple, le schéma se trouve dans `src/schema.graphql`. Une fois le schéma
+ * définit, il faut définir des résolveurs qui permettront de faire le lien entre une
+ * requête cliente et l'exécution de votre code sur le serveur.
+ *
+ * Dans ce bac à sable, j'utilise `graphql-codegen` pour générer du code à partir du
+ * schéma graphql en lançant la commande `npm run generate`. Cet outil va me générer
+ * les types correspondants au schéma ainsi définit ce qui permet de se baser sur
+ * des types stricts lors de l'écriture des résolveurs et donc ainsi de lever le plus
+ * d'erreurs pendant la phase de compilation si les types de retours ou les arguments ne
+ * matchent pas entre autre.
+ *
+ * Continuez de scroller, pour la suite ;)
+ */
 
-class PersonID extends ValueObject<"PersonID", PersonID> {
-  constructor(readonly value: string) {
-    super();
+import express from "express";
+import graphqlHTTP from "express-graphql";
+import { makeExecutableSchema } from "graphql-tools";
+import { importSchema } from "graphql-import";
+
+/**
+ * Tout ce qui se trouve dans `generated/` et généré par la commande `npm run generate`,
+ * il s'agit des types qui nous permettent du code type safe et d'éviter des erreurs
+ * à l'exécution.
+ */
+import { MutationResolvers, QueryResolvers } from "./generated/graphql";
+
+/**
+ * C'est ici que les choses deviennent intéressantes. En graphql, il existe trois
+ * "noeuds" racines : Query (lecture), Mutation (écriture), Subscription (abonnement).
+ *
+ * Ici, je défini une variables Query que je type en utilisant le type Query généré
+ * par graphql-codegen et qui match ma définition de schéma.
+ *
+ * J'en profite pour définir tous les champs en requis grâce au type `Required`, ce qui
+ * m'évite d'avoir des résolveurs non définis et de voir très tôt que j'ai oublié
+ * d'implémenter des opérations.
+ */
+const Query: Required<QueryResolvers> = {
+  hello(root, args, ctx) {
+    return "world";
+  },
+  users(root, args, ctx) {
+    return [
+      {
+        FirstName: "john",
+        LastName: "doe",
+      },
+    ];
+  },
+  userByName(root, args, ctx) {
+    /**
+     * Ce qui est intéressant avec cette approche, c'est qu'on évite les types `any`,
+     * vous pouvez observer ici que l'argument args est typé et que le type de retour
+     * aussi ce qui éliminera beaucoup d'erreur lors du dev.
+     */
+    const fn = args.firstName;
+    return { FirstName: "", LastName: "" };
+  },
+};
+
+/**
+ * Pour les mutations, c'est exactement la même chose.
+ */
+const Mutation: Required<MutationResolvers> = {
+  changeMessage(root, args, ctx) {
+    return args.msg;
+  },
+  doSomething(root, args, ctx) {
+    return !!args.cmd?.one;
+  },
+};
+
+/**
+ * Une fois que nos résolveurs sont définis, il ne nous reste plus qu'à brancher
+ * le tout avec ce qui suit. Cette variable sera donné au handler express qui récupérera
+ * toutes les requêtes pointant sur `/graphql` et d'exécuter les resolveurs appropriés.
+ */
+const schema = makeExecutableSchema({
+  typeDefs: importSchema("./src/schema.graphql"),
+  resolvers: {
+    Query,
+    Mutation,
+  },
+});
+
+/**
+ * On instantie le serveur express.
+ */
+const app = express();
+
+/**
+ * Et on utilise le handler graphqlHTTP pour express en le configurant avec notre
+ * schéma. Et on voit ici le fameux `/graphql`. Graphiql est très sympa en dev
+ * pour tester des requêtes sur l'api graphql ainsi exposée.
+ */
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema,
+    graphiql: true,
+  })
+);
+
+/**
+ * Et on lance le serveur !
+ *
+ * Il ne vous reste plus qu'à aller sur http://localhost:4000/graphql pour voir le résultat.
+ */
+app.listen(4000, (err) => {
+  if (err) {
+    console.error(err);
+    return;
   }
 
-  public equals(other: PersonID): boolean {
-    return other.value === this.value;
-  }
-}
-
-class Person extends Entity<PersonID> {
-  constructor(private name: string) {
-    super(new PersonID("42"));
-  }
-}
-
-interface PersonRepository {
-  GetByID(id: PersonID): Person;
-}
-
-var repo!: PersonRepository;
-
-var p = repo.GetByID(new PersonID("43"));
-var p2 = new Person("john doe");
-
-// class DisplayName extends ValueObject<"DisplayName"> {
-//   constructor(readonly value: string) {
-//     super();
-//     if (!value) {
-//       throw Error("value is mandatory");
-//     }
-//   }
-
-//   public Equals(other: any): boolean {
-//     if (!(other instanceof DisplayName)) {
-//       return false;
-//     }
-
-//     return other.value === this.value;
-//   }
-// }
-
-// class AccessToken extends ValueObject<"Access"> {
-//   constructor(readonly value: string) {
-//     super();
-//   }
-// }
-
-// class RefreshToken extends ValueObject<"Refresh"> {
-//   constructor(readonly value: string) {
-//     super();
-//   }
-// }
-
-// type Toto = string;
-
-// const john = new AccessToken("john doe");
-// const doe = new DisplayName("john doe");
-
-// // undefined ?? throw new Error('errar');
-
-// Test(new RefreshToken("refresh_token"));
-
-// // console.log(WhatsMyName(john), john.Equals(doe));
-
-// function Test(token: AccessToken) {}
-
-// function WhatsMyName(name: DisplayName): string {
-//   return name.value;
-// }
-
-// abstract class Aggregate<TProps> {
-//   protected constructor(protected props: TProps) {}
-
-//   public createMemento(): Readonly<TProps> {
-//     return this.props;
-//   }
-
-//   public static fromMemento<T extends Aggregate<TProps>, TProps>(
-//     memento: Readonly<TProps>
-//   ): T {
-//     return new Aggregate<TProps>(memento) as T;
-//   }
-// }
-
-// interface TestProps {
-//   name: string;
-// }
-
-// class TestEntity extends Aggregate<TestProps> {
-//   get name() {
-//     return this.props.name;
-//   }
-
-//   constructor(name: string) {
-//     super({
-//       name,
-//     });
-//   }
-
-//   public static fromMemento(memento: Readonly<TestProps>): TestEntity {
-//     return null;
-//   }
-// }
-
-// const t = new TestEntity("john doe");
-
-// const state = t.createMemento();
-// TestEntity.fromMemento(state);
+  console.info("Listening!");
+});
