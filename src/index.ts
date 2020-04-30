@@ -117,7 +117,8 @@ app.use(
 /**
  * Et on lance le serveur !
  *
- * Il ne vous reste plus qu'à aller sur http://localhost:4000/graphql pour voir le résultat.
+ * Il ne vous reste plus qu'à lancer le serveur avec un `npm start` et à vous rendre
+ * sur http://localhost:4000/graphql pour voir le résultat.
  */
 app.listen(4000, (err) => {
   if (err) {
