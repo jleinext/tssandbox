@@ -30,7 +30,7 @@ import graphqlHTTP from "express-graphql";
 import { makeExecutableSchema } from "graphql-tools";
 import { importSchema } from "graphql-import";
 import { InMemoryPersonRepository } from "./infra";
-import { CreatePersonUseCase, GetPersons } from "./useCases";
+import { CreatePersonUseCase, GetPersonsUseCase } from "./useCases";
 
 /**
  * Tout ce qui se trouve dans `generated/` et généré par la commande `npm run generate`,
@@ -46,7 +46,7 @@ import { MutationResolvers, QueryResolvers } from "./generated/graphql";
 
 const personRepository = new InMemoryPersonRepository();
 const createPersonUseCase = new CreatePersonUseCase(personRepository);
-const getPersonsUseCase: GetPersons = personRepository; // Ici le repository implèmente le cas d'utilisation de lecture.
+const getPersonsUseCase: GetPersonsUseCase = personRepository; // Ici le repository implèmente le cas d'utilisation de lecture.
 
 /**
  * C'est ici que les choses deviennent intéressantes. En graphql, il existe trois
@@ -77,7 +77,7 @@ const Mutation: Required<MutationResolvers> = {
      */
     const id = createPersonUseCase.execute(args.cmd);
 
-    return getPersonsUseCase.getBySsn(id);
+    return getPersonsUseCase.getBySSN(id);
   },
 };
 

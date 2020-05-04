@@ -21,7 +21,7 @@ export interface PersonDTO {
  * d'aller récupérer les données  mais dans cet exemple, c'est la couche d'infrastructure
  * qui va l'implémenter (voir `InMemoryPersonRepository`).
  */
-export interface GetPersons {
+export interface GetPersonsUseCase {
   getAll(): PersonDTO[];
-  getBySsn(ssn: string): PersonDTO;
+  getBySSN(ssn: string): PersonDTO;
 }

@@ -1,12 +1,13 @@
 import { PersonRepository, Person, SecuritySocialNumber } from "../domain";
-import { GetPersons, PersonDTO } from "../useCases";
+import { GetPersonsUseCase, PersonDTO } from "../useCases";
 
 /**
  * Petit dépôt en mémoire. Ici il implèmente à la fois le repo et le cas d'utilisation
  * de lecture mais on pourrait tout à fait le découper plus pour éviter de se mélanger
  * les pinceaux.
  */
-export class InMemoryPersonRepository implements PersonRepository, GetPersons {
+export class InMemoryPersonRepository
+  implements PersonRepository, GetPersonsUseCase {
   constructor(private data: Person[] = []) {}
 
   add(aggregate: Person): void {
@@ -40,7 +41,7 @@ export class InMemoryPersonRepository implements PersonRepository, GetPersons {
     }));
   }
 
-  getBySsn(ssn: string): PersonDTO {
+  getBySSN(ssn: string): PersonDTO {
     const data = this.data.find((d) => d["ssn"].value === ssn);
 
     if (!data) {
