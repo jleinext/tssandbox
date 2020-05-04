@@ -19,6 +19,7 @@ export class InMemoryPersonRepository implements PersonRepository, GetPersons {
     // par la syntax entity["prop"] qui me permet d'ignorer les modificateurs d'accès
     // mais je pourrais aussi exposer en lecture seule les propriétés de l'entité.
     return this.data.map((d) => ({
+      id: d.id.value,
       securitySocialNumber: d["ssn"].value,
       nickname: d["nickname"],
     }));
@@ -32,6 +33,7 @@ export class InMemoryPersonRepository implements PersonRepository, GetPersons {
     }
 
     return {
+      id: data.id.value,
       securitySocialNumber: data["ssn"].value,
       nickname: data["nickname"],
     };

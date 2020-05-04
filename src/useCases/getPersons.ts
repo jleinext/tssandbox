@@ -7,6 +7,7 @@
  * objet métier, simplement une association de propriétés pour l'affichage.
  */
 export interface PersonDTO {
+  id: string;
   securitySocialNumber: string;
   nickname: string;
 }

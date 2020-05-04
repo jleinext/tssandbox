@@ -27,6 +27,7 @@ export type MutationCreatePersonArgs = {
 
 export type Person = {
    __typename?: 'Person';
+  id: Scalars['String'];
   securitySocialNumber: Scalars['String'];
   nickname: Scalars['String'];
 };
@@ -137,6 +138,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type PersonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   securitySocialNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   nickname?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
