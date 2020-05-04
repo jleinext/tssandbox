@@ -1,6 +1,11 @@
-import { PersonRepository, Person } from "../domain";
+import { PersonRepository, Person, SecuritySocialNumber } from "../domain";
 import { GetPersons, PersonDTO } from "../useCases";
 
+/**
+ * Petit dépôt en mémoire. Ici il implèmente à la fois le repo et le cas d'utilisation
+ * de lecture mais on pourrait tout à fait le découper plus pour éviter de se mélanger
+ * les pinceaux.
+ */
 export class InMemoryPersonRepository implements PersonRepository, GetPersons {
   constructor(private data: Person[] = []) {}
 
@@ -11,6 +16,16 @@ export class InMemoryPersonRepository implements PersonRepository, GetPersons {
   save(aggregate: Person): void {
     // Ici, pas besoin puisque quand sorti de l'aggrégat, on manipulera la même
     // instance.
+  }
+
+  getBySecuritySocialNumber(ssn: SecuritySocialNumber): Person {
+    const person = this.data.find((d) => d["ssn"].equals(ssn));
+
+    if (!person) {
+      throw new Error("not_found");
+    }
+
+    return person;
   }
 
   getAll(): PersonDTO[] {
