@@ -35,23 +35,7 @@
         "description": null,
         "fields": [
           {
-            "name": "hello",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "users",
+            "name": "persons",
             "description": null,
             "args": [],
             "type": {
@@ -65,41 +49,10 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "User",
+                    "name": "Person",
                     "ofType": null
                   }
                 }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "userByName",
-            "description": null,
-            "args": [
-              {
-                "name": "firstName",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "User",
-                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -117,18 +70,18 @@
         "description": null,
         "fields": [
           {
-            "name": "changeMessage",
+            "name": "createPerson",
             "description": null,
             "args": [
               {
-                "name": "msg",
+                "name": "cmd",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
+                    "kind": "INPUT_OBJECT",
+                    "name": "CreatePersonCommand",
                     "ofType": null
                   }
                 },
@@ -139,35 +92,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "doSomething",
-            "description": null,
-            "args": [
-              {
-                "name": "cmd",
-                "description": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "DoSomethingCommand",
-                  "ofType": null
-                },
-                "defaultValue": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
+                "kind": "OBJECT",
+                "name": "Person",
                 "ofType": null
               }
             },
@@ -182,11 +108,11 @@
       },
       {
         "kind": "OBJECT",
-        "name": "User",
+        "name": "Person",
         "description": null,
         "fields": [
           {
-            "name": "FirstName",
+            "name": "securitySocialNumber",
             "description": null,
             "args": [],
             "type": {
@@ -202,7 +128,7 @@
             "deprecationReason": null
           },
           {
-            "name": "LastName",
+            "name": "nickname",
             "description": null,
             "args": [],
             "type": {
@@ -225,22 +151,26 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "DoSomethingCommand",
+        "name": "CreatePersonCommand",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "one",
+            "name": "ssn",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "defaultValue": null
           },
           {
-            "name": "two",
+            "name": "nickname",
             "description": null,
             "type": {
               "kind": "NON_NULL",

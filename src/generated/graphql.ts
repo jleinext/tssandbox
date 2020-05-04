@@ -12,41 +12,28 @@ export type Scalars = {
 
 export type Query = {
    __typename?: 'Query';
-  hello: Scalars['String'];
-  users: Array<User>;
-  userByName: User;
-};
-
-
-export type QueryUserByNameArgs = {
-  firstName: Scalars['String'];
+  persons: Array<Person>;
 };
 
 export type Mutation = {
    __typename?: 'Mutation';
-  changeMessage: Scalars['String'];
-  doSomething: Scalars['Boolean'];
+  createPerson: Person;
 };
 
 
-export type MutationChangeMessageArgs = {
-  msg: Scalars['String'];
+export type MutationCreatePersonArgs = {
+  cmd: CreatePersonCommand;
 };
 
-
-export type MutationDoSomethingArgs = {
-  cmd?: Maybe<DoSomethingCommand>;
+export type Person = {
+   __typename?: 'Person';
+  securitySocialNumber: Scalars['String'];
+  nickname: Scalars['String'];
 };
 
-export type User = {
-   __typename?: 'User';
-  FirstName: Scalars['String'];
-  LastName: Scalars['String'];
-};
-
-export type DoSomethingCommand = {
-  one?: Maybe<Scalars['String']>;
-  two: Scalars['String'];
+export type CreatePersonCommand = {
+  ssn: Scalars['String'];
+  nickname: Scalars['String'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -127,8 +114,8 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
-  User: ResolverTypeWrapper<User>,
-  DoSomethingCommand: DoSomethingCommand,
+  Person: ResolverTypeWrapper<Person>,
+  CreatePersonCommand: CreatePersonCommand,
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -137,31 +124,28 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'],
   Query: {},
   Mutation: {},
-  User: User,
-  DoSomethingCommand: DoSomethingCommand,
+  Person: Person,
+  CreatePersonCommand: CreatePersonCommand,
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  hello?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>,
-  userByName?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserByNameArgs, 'firstName'>>,
+  persons?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>,
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  changeMessage?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationChangeMessageArgs, 'msg'>>,
-  doSomething?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDoSomethingArgs, never>>,
+  createPerson?: Resolver<ResolversTypes['Person'], ParentType, ContextType, RequireFields<MutationCreatePersonArgs, 'cmd'>>,
 }>;
 
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
-  FirstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  LastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+export type PersonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = ResolversObject<{
+  securitySocialNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  nickname?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
-  User?: UserResolvers<ContextType>,
+  Person?: PersonResolvers<ContextType>,
 }>;
 
 

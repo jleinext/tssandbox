@@ -1,0 +1,1 @@
+export { InMemoryPersonRepository } from "./personRepository";

@@ -29,6 +29,8 @@ import express from "express";
 import graphqlHTTP from "express-graphql";
 import { makeExecutableSchema } from "graphql-tools";
 import { importSchema } from "graphql-import";
+import { InMemoryPersonRepository } from "./infra";
+import { CreatePersonUseCase, GetPersons } from "./useCases";
 
 /**
  * Tout ce qui se trouve dans `generated/` et généré par la commande `npm run generate`,
@@ -36,6 +38,15 @@ import { importSchema } from "graphql-import";
  * à l'exécution.
  */
 import { MutationResolvers, QueryResolvers } from "./generated/graphql";
+
+/**
+ * On ne s'embête pas ici, pas d'inversify ou quoi que ce soit, on se contente
+ * d'instantier nos différents services.
+ */
+
+const personRepository = new InMemoryPersonRepository();
+const createPersonUseCase = new CreatePersonUseCase(personRepository);
+const getPersonsUseCase: GetPersons = personRepository; // Ici le repository implèmente le cas d'utilisation de lecture.
 
 /**
  * C'est ici que les choses deviennent intéressantes. En graphql, il existe trois
@@ -49,25 +60,8 @@ import { MutationResolvers, QueryResolvers } from "./generated/graphql";
  * d'implémenter des opérations.
  */
 const Query: Required<QueryResolvers> = {
-  hello(root, args, ctx) {
-    return "world";
-  },
-  users(root, args, ctx) {
-    return [
-      {
-        FirstName: "john",
-        LastName: "doe",
-      },
-    ];
-  },
-  userByName(root, args, ctx) {
-    /**
-     * Ce qui est intéressant avec cette approche, c'est qu'on évite les types `any`,
-     * vous pouvez observer ici que l'argument args est typé et que le type de retour
-     * aussi ce qui éliminera beaucoup d'erreur lors du dev.
-     */
-    const fn = args.firstName;
-    return { FirstName: "", LastName: "" };
+  persons(root, args, ctx) {
+    return getPersonsUseCase.getAll();
   },
 };
 
@@ -75,11 +69,15 @@ const Query: Required<QueryResolvers> = {
  * Pour les mutations, c'est exactement la même chose.
  */
 const Mutation: Required<MutationResolvers> = {
-  changeMessage(root, args, ctx) {
-    return args.msg;
-  },
-  doSomething(root, args, ctx) {
-    return !!args.cmd?.one;
+  createPerson(root, args, ctx) {
+    /**
+     * Ce qui est intéressant avec cette approche, c'est qu'on évite les types `any`,
+     * vous pouvez observer ici que l'argument args est typé et que le type de retour
+     * aussi ce qui éliminera beaucoup d'erreur lors du dev.
+     */
+    const id = createPersonUseCase.execute(args.cmd);
+
+    return getPersonsUseCase.getBySsn(id);
   },
 };
 

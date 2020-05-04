@@ -1,21 +1,17 @@
 type Query {
-  hello: String!
-  users: [User!]!
-  userByName(firstName: String!): User!
+  persons: [Person!]!
 }
 
 type Mutation {
-  changeMessage(msg: String!): String!
-  updateUser(firstName: String!): User!
-  doSomething(cmd: DoSomethingCommand): Boolean!
+  createPerson(cmd: CreatePersonCommand!): Person!
 }
 
-type User {
-  FirstName: String!
-  LastName: String!
+type Person {
+  securitySocialNumber: String!
+  nickname: String!
 }
 
-input DoSomethingCommand {
-  one: String
-  two: String!
+input CreatePersonCommand {
+  ssn: String!
+  nickname: String!
 }
