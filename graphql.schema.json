@@ -81,7 +81,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "CreatePersonCommand",
+                    "name": "CreatePerson",
                     "ofType": null
                   }
                 },
@@ -167,7 +167,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "CreatePersonCommand",
+        "name": "CreatePerson",
         "description": null,
         "fields": null,
         "inputFields": [

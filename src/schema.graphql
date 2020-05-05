@@ -3,7 +3,7 @@ type Query {
 }
 
 type Mutation {
-  createPerson(cmd: CreatePersonCommand!): Person!
+  createPerson(cmd: CreatePerson!): Person!
 }
 
 type Person {
@@ -12,7 +12,7 @@ type Person {
   nickname: String!
 }
 
-input CreatePersonCommand {
+input CreatePerson {
   ssn: String!
   nickname: String!
 }

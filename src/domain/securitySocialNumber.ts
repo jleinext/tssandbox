@@ -28,7 +28,7 @@ export class SecuritySocialNumber extends ValueObject<
     // à se faufiler, on s'assure que l'intégrité de notre domaine n'est pas compromise
     // en ajoutant la validation ici.
 
-    if (!value) {
+    if (!value || value.length !== 15) {
       throw new Error("ssn_invalid_value");
     }
   }

@@ -22,7 +22,7 @@ export type Mutation = {
 
 
 export type MutationCreatePersonArgs = {
-  cmd: CreatePersonCommand;
+  cmd: CreatePerson;
 };
 
 export type Person = {
@@ -32,7 +32,7 @@ export type Person = {
   nickname: Scalars['String'];
 };
 
-export type CreatePersonCommand = {
+export type CreatePerson = {
   ssn: Scalars['String'];
   nickname: Scalars['String'];
 };
@@ -116,7 +116,7 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
   Person: ResolverTypeWrapper<Person>,
-  CreatePersonCommand: CreatePersonCommand,
+  CreatePerson: CreatePerson,
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -126,7 +126,7 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {},
   Mutation: {},
   Person: Person,
-  CreatePersonCommand: CreatePersonCommand,
+  CreatePerson: CreatePerson,
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
