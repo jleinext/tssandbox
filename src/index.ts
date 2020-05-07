@@ -29,8 +29,12 @@ import express from "express";
 import graphqlHTTP from "express-graphql";
 import { makeExecutableSchema } from "graphql-tools";
 import { importSchema } from "graphql-import";
-import { InMemoryPersonRepository } from "./infra";
-import { CreatePersonUseCase, GetPersonsUseCase } from "./useCases";
+import { InMemoryPersonRepository, SimpleEventDispatcher } from "./infra";
+import {
+  CreatePersonUseCase,
+  GetPersonsUseCase,
+  RenamePersonUseCase,
+} from "./useCases";
 
 /**
  * Tout ce qui se trouve dans `generated/` et généré par la commande `npm run generate`,
@@ -44,9 +48,26 @@ import { MutationResolvers, QueryResolvers } from "./generated/graphql";
  * d'instantier nos différents services.
  */
 
-const personRepository = new InMemoryPersonRepository();
+const dispatcher = new SimpleEventDispatcher();
+const personRepository = new InMemoryPersonRepository(dispatcher);
 const createPersonUseCase = new CreatePersonUseCase(personRepository);
+const renamePersonUseCase = new RenamePersonUseCase(personRepository);
 const getPersonsUseCase: GetPersonsUseCase = personRepository; // Ici le repository implèmente le cas d'utilisation de lecture.
+
+/**
+ * En utilisant notre dispatcher, on peut recevoir tous les événements levés par notre
+ * domaine ce qui nous permet d'apporter de l'observabilité et d'être informé de toute
+ * modification de notre domaine.
+ */
+
+dispatcher.subscribe((evt) => {
+  /**
+   * Ici je ne fais que de l'affichage mais on pourrait tout à fait imaginer déclencher
+   * un cas d'utilisation issu d'un autre domaine ce qui nous permet de communiquer
+   * de manière très découplé entre nos différents contextes bornés.
+   */
+  console.info(evt);
+});
 
 /**
  * C'est ici que les choses deviennent intéressantes. En graphql, il existe trois
@@ -77,7 +98,15 @@ const Mutation: Required<MutationResolvers> = {
      */
     const id = createPersonUseCase.execute(args.cmd);
 
+    /**
+     * Dans cet exemple on triche un peu parce qu'on sait que l'id d'une personne
+     * est égale à son numéro de sécurité sociale.
+     */
     return getPersonsUseCase.getBySSN(id);
+  },
+  renamePerson(root, args, ctx) {
+    renamePersonUseCase.execute(args.cmd);
+    return getPersonsUseCase.getBySSN(args.cmd.id);
   },
 };
 

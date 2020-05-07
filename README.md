@@ -24,6 +24,7 @@ Une fois le serveur lancé, direction [http://localhost:4000/graphql](http://loc
 ```graphql
 query GetAllPersons {
   persons {
+    id
     securitySocialNumber
     nickname
   }
@@ -31,7 +32,15 @@ query GetAllPersons {
 
 mutation CreatePerson {
   createPerson(cmd: { ssn: "185057800608436", nickname: "john doe" }) {
+    id
     securitySocialNumber
+    nickname
+  }
+}
+
+mutation RenamePerson {
+  renamePerson(cmd: { id: "185057800608436", nickname: "bobby" }) {
+    id
     nickname
   }
 }

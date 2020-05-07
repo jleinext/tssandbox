@@ -18,15 +18,17 @@ export class SecuritySocialNumber extends ValueObject<
   constructor(readonly value: string) {
     super();
 
-    // Ici on validerait la valeur du numéro de sécurité sociale et que les
-    // règles sont validées et dans le cas contraire, une erreur serait tout simplement
-    // levée. Ici, on s'assure juste qu'une valeur est donnée.
-    //
-    // Autre chose, ici il s'agit de forcer des règles métiers, la validation des
-    // entrées utilisateur pour informer l'UI que quelque chose ne va pas se fera
-    // plutôt dans la couche applicative mais si jamais une donnée erronnée arrive
-    // à se faufiler, on s'assure que l'intégrité de notre domaine n'est pas compromise
-    // en ajoutant la validation ici.
+    /**
+     * Ici on validerait la valeur du numéro de sécurité sociale et que les
+     * règles sont validées et dans le cas contraire, une erreur serait tout simplement
+     * levée. Ici, on s'assure juste qu'une valeur est donnée.
+     *
+     * Autre chose, ici il s'agit de forcer des règles métiers, la validation des
+     * entrées utilisateur pour informer l'UI que quelque chose ne va pas se fera
+     * plutôt dans la couche applicative mais si jamais une donnée erronnée arrive
+     * à se faufiler, on s'assure que l'intégrité de notre domaine n'est pas compromise
+     * en ajoutant la validation ici.
+     */
 
     if (!value || value.length !== 15) {
       throw new Error("ssn_invalid_value");

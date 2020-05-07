@@ -4,6 +4,7 @@ type Query {
 
 type Mutation {
   createPerson(cmd: CreatePerson!): Person!
+  renamePerson(cmd: RenamePerson!): Person!
 }
 
 type Person {
@@ -14,5 +15,10 @@ type Person {
 
 input CreatePerson {
   ssn: String!
+  nickname: String!
+}
+
+input RenamePerson {
+  id: String!
   nickname: String!
 }

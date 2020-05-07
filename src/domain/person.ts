@@ -8,6 +8,8 @@
 import { AggregateRoot } from "../building-blocks";
 import { PersonId } from "./personId";
 import { SecuritySocialNumber } from "./securitySocialNumber";
+import { PersonCreated } from "./personCreated";
+import { PersonRenamed } from "./personRenamed";
 
 /**
  * Ici, l'entité Person est aussi un aggrégat racine car il représente une cohérence
@@ -44,6 +46,7 @@ export class Person extends AggregateRoot<PersonId> {
     private nickname: string
   ) {
     super(id);
+    this.addEvent(new PersonCreated(id));
   }
 
   /**
@@ -55,5 +58,12 @@ export class Person extends AggregateRoot<PersonId> {
    */
   rename(nickname: string) {
     this.nickname = nickname;
+
+    /**
+     * Le fait de stocker l'événement dans l'aggrégat permet de ne pas le dispatcher
+     * maintenant sachant que la persistence de cet aggrégat peut tout à fait échouer
+     * et dans ce cas là, lever l'événement pourrait être préjudiciable.
+     */
+    this.addEvent(new PersonRenamed(this.id, this.nickname));
   }
 }

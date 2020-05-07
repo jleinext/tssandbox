@@ -3,3 +3,4 @@ export { Entity } from "./entity";
 export { ValueObject } from "./valueobject";
 export { UseCase } from "./useCase";
 export { Repository } from "./repository";
+export { DomainEvent, EventDispatcher } from "./event";

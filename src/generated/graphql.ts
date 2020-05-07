@@ -18,11 +18,17 @@ export type Query = {
 export type Mutation = {
    __typename?: 'Mutation';
   createPerson: Person;
+  renamePerson: Person;
 };
 
 
 export type MutationCreatePersonArgs = {
   cmd: CreatePerson;
+};
+
+
+export type MutationRenamePersonArgs = {
+  cmd: RenamePerson;
 };
 
 export type Person = {
@@ -34,6 +40,11 @@ export type Person = {
 
 export type CreatePerson = {
   ssn: Scalars['String'];
+  nickname: Scalars['String'];
+};
+
+export type RenamePerson = {
+  id: Scalars['String'];
   nickname: Scalars['String'];
 };
 
@@ -117,6 +128,7 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>,
   Person: ResolverTypeWrapper<Person>,
   CreatePerson: CreatePerson,
+  RenamePerson: RenamePerson,
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -127,6 +139,7 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {},
   Person: Person,
   CreatePerson: CreatePerson,
+  RenamePerson: RenamePerson,
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -135,6 +148,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createPerson?: Resolver<ResolversTypes['Person'], ParentType, ContextType, RequireFields<MutationCreatePersonArgs, 'cmd'>>,
+  renamePerson?: Resolver<ResolversTypes['Person'], ParentType, ContextType, RequireFields<MutationRenamePersonArgs, 'cmd'>>,
 }>;
 
 export type PersonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = ResolversObject<{
