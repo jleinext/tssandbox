@@ -22,7 +22,7 @@
     "@graphql-codegen/typescript": "1.13.3",
     "@graphql-codegen/typescript-resolvers": "1.13.3",
     "@graphql-codegen/introspection": "1.13.3",
-    "@graphql-codegen/cli": "1.13.3"
+    "@graphql-codegen/cli": "1.21.8"
   },
   "graphql-import": "^1.0.2",
   "dependencies": {
